@@ -1,538 +1,1200 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Norin — Robotics & Autonomous Driving</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <title>诺林｜Norin</title>
+  <meta name="description" content="诺林｜Norin 的个人展示平台：研究、项目、系统构建与 AI 工具。" />
   <style>
     :root {
-      --bg: #f7f6f3;
-      --surface: #ffffff;
-      --border: #e8e6e0;
-      --text: #1a1814;
-      --muted: #8a8680;
-      --accent: #2d5a3d;
-      --accent-light: #e8f0ea;
-      --accent2: #c4622d;
-      --mono: 'DM Mono', monospace;
-      --serif: 'DM Serif Display', serif;
-      --sans: 'DM Sans', sans-serif;
+      --bg: #0a0b0e;
+      --bg2: #111318;
+      --bg3: #171a21;
+      --bg4: #1f2430;
+      --border: rgba(255,255,255,0.08);
+      --border2: rgba(255,255,255,0.14);
+      --text: #e8eaf0;
+      --muted: #7d8594;
+      --muted2: #a5adba;
+      --blue: #3b82f6;
+      --blue2: #93c5fd;
+      --green: #10b981;
+      --green2: #6ee7b7;
+      --purple: #8b5cf6;
+      --purple2: #c4b5fd;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --radius: 16px;
+      --mono: "SFMono-Regular", "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-
     body {
-      background: var(--bg);
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 18% 4%, rgba(59,130,246,0.12), transparent 28%),
+        radial-gradient(circle at 84% 0%, rgba(139,92,246,0.10), transparent 30%),
+        radial-gradient(circle at 72% 46%, rgba(16,185,129,0.06), transparent 28%),
+        var(--bg);
       color: var(--text);
       font-family: var(--sans);
-      font-weight: 300;
+      font-size: 14px;
       line-height: 1.7;
       overflow-x: hidden;
     }
 
-    /* ── NOISE TEXTURE ── */
     body::before {
-      content: '';
+      content: "";
       position: fixed;
       inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
       pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent 70%);
       z-index: 0;
     }
 
-    /* ── LAYOUT ── */
-    .container {
-      max-width: 760px;
+    a { color: inherit; text-decoration: none; }
+
+    .page {
+      width: min(1120px, calc(100vw - 40px));
       margin: 0 auto;
-      padding: 0 2rem;
       position: relative;
       z-index: 1;
     }
 
-    /* ── HEADER ── */
-    header {
-      padding: 4rem 0 3rem;
-      border-bottom: 1px solid var(--border);
-      animation: fadeUp 0.7s ease both;
-    }
-
-    .header-inner {
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
-      gap: 2rem;
+      gap: 24px;
+      padding: 22px 0;
+      backdrop-filter: blur(18px);
     }
 
-    .header-left { flex: 1; }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
 
-    .tag {
-      display: inline-block;
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      border: 1px solid var(--border2);
+      background:
+        linear-gradient(135deg, rgba(59,130,246,0.28), rgba(139,92,246,0.12)),
+        var(--bg2);
+      display: grid;
+      place-items: center;
       font-family: var(--mono);
-      font-size: 0.72rem;
-      letter-spacing: 0.08em;
-      color: var(--accent);
-      background: var(--accent-light);
-      border: 1px solid #c8deca;
-      padding: 0.2rem 0.6rem;
-      border-radius: 2px;
-      margin-bottom: 1rem;
+      color: var(--blue2);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.22);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted2);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .nav a {
+      padding: 8px 11px;
+      border-radius: 999px;
+      transition: 0.2s ease;
+    }
+
+    .nav a:hover {
+      color: var(--text);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .hero {
+      min-height: 560px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 420px;
+      align-items: center;
+      gap: 54px;
+      border-bottom: 1px solid var(--border);
+      padding: 76px 0 72px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 6px rgba(16,185,129,0.10);
     }
 
     h1 {
-      font-family: var(--serif);
-      font-size: clamp(2.4rem, 6vw, 3.6rem);
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      margin-bottom: 0.4rem;
+      font-size: clamp(54px, 10vw, 104px);
+      line-height: 0.95;
+      letter-spacing: -0.07em;
+      font-weight: 650;
+      margin-bottom: 24px;
     }
 
-    h1 em {
-      font-style: italic;
-      color: var(--accent);
+    .hero-title span {
+      display: block;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(232,234,240,0.34);
     }
 
-    .subtitle {
-      font-size: 0.95rem;
+    .hero-desc {
+      max-width: 620px;
+      font-size: clamp(18px, 2vw, 23px);
+      line-height: 1.55;
+      color: #cfd5df;
+      margin-bottom: 28px;
+    }
+
+    .hero-meta {
       color: var(--muted);
       font-family: var(--mono);
-      margin-bottom: 1.5rem;
+      font-size: 13px;
+      margin-bottom: 30px;
     }
 
-    .bio {
-      font-size: 1rem;
-      color: #4a4740;
-      max-width: 480px;
-      line-height: 1.75;
-    }
-
-    .bio-zh {
-      font-size: 0.88rem;
-      color: var(--muted);
-      margin-top: 0.4rem;
-    }
-
-    /* ── NAV ── */
-    nav {
+    .hero-actions {
       display: flex;
-      gap: 0.5rem;
-      margin-top: 2rem;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
-    nav a {
-      font-family: var(--mono);
-      font-size: 0.8rem;
-      text-decoration: none;
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      min-height: 42px;
+      border-radius: 999px;
+      border: 1px solid var(--border2);
+      background: rgba(255,255,255,0.035);
       color: var(--text);
+      font-family: var(--mono);
+      font-size: 12px;
+      transition: 0.2s ease;
+    }
+
+    .btn.primary {
+      background: rgba(59,130,246,0.14);
+      border-color: rgba(59,130,246,0.38);
+      color: var(--blue2);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(255,255,255,0.28);
+      background: rgba(255,255,255,0.07);
+    }
+
+    .hero-visual {
+      position: relative;
+      height: 420px;
       border: 1px solid var(--border);
-      padding: 0.35rem 0.8rem;
-      border-radius: 2px;
-      transition: all 0.2s;
-      background: var(--surface);
+      border-radius: 28px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.05), transparent),
+        var(--bg2);
+      overflow: hidden;
+      box-shadow: 0 28px 80px rgba(0,0,0,0.32);
     }
 
-    nav a:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: var(--accent-light);
+    #heroCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
 
-    nav a.primary {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
+    .visual-label {
+      position: absolute;
+      left: 20px;
+      top: 20px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      background: rgba(10,11,14,0.64);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 10px;
+      backdrop-filter: blur(12px);
     }
 
-    nav a.primary:hover {
-      background: #224a30;
-      border-color: #224a30;
-      color: #fff;
+    .visual-card {
+      position: absolute;
+      right: 18px;
+      bottom: 18px;
+      width: 190px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 13px 14px;
+      background: rgba(10,11,14,0.74);
+      backdrop-filter: blur(14px);
     }
 
-    /* ── SECTIONS ── */
-    section {
-      padding: 3rem 0;
+    .visual-card .small {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 6px;
+    }
+
+    .visual-card .big {
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .section {
+      padding: 58px 0;
       border-bottom: 1px solid var(--border);
-      animation: fadeUp 0.7s ease both;
     }
 
-    section:nth-child(2) { animation-delay: 0.1s; }
-    section:nth-child(3) { animation-delay: 0.2s; }
-    section:nth-child(4) { animation-delay: 0.3s; }
-    section:nth-child(5) { animation-delay: 0.4s; }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+      margin-bottom: 22px;
+    }
 
     .section-label {
       font-family: var(--mono);
-      font-size: 0.72rem;
+      font-size: 11px;
       letter-spacing: 0.12em;
-      color: var(--muted);
       text-transform: uppercase;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 8px;
     }
 
-    .section-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
+    .section-title {
+      font-size: 24px;
+      font-weight: 560;
+      letter-spacing: -0.03em;
     }
 
-    /* ── TECH STACK ── */
-    .stack-grid {
+    .section-note {
+      max-width: 440px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .grid-3 {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
     }
 
-    .stack-card {
-      background: var(--surface);
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .card {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.045), transparent),
+        var(--bg2);
       border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 1rem 1.2rem;
-      transition: border-color 0.2s;
+      border-radius: var(--radius);
+      padding: 22px;
+      transition: 0.2s ease;
+      min-height: 100%;
     }
 
-    .stack-card:hover { border-color: var(--accent); }
+    .card:hover {
+      border-color: var(--border2);
+      transform: translateY(-1px);
+    }
 
-    .stack-category {
+    .card.k-blue { box-shadow: inset 0 1px 0 rgba(59,130,246,0.18); }
+    .card.k-green { box-shadow: inset 0 1px 0 rgba(16,185,129,0.18); }
+    .card.k-purple { box-shadow: inset 0 1px 0 rgba(139,92,246,0.18); }
+
+    .card-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
       font-family: var(--mono);
-      font-size: 0.7rem;
-      color: var(--accent2);
-      letter-spacing: 0.08em;
-      margin-bottom: 0.5rem;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
     }
 
-    .stack-items {
-      font-size: 0.88rem;
-      color: #4a4740;
-      line-height: 1.8;
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--blue);
+    }
+    .dot.green { background: var(--green); }
+    .dot.purple { background: var(--purple); }
+    .dot.amber { background: var(--amber); }
+
+    .card h3 {
+      font-size: 18px;
+      font-weight: 560;
+      margin-bottom: 9px;
+      letter-spacing: -0.02em;
     }
 
-    /* ── PROJECTS ── */
-    .project-list { display: flex; flex-direction: column; gap: 1rem; }
+    .card p {
+      color: #aab2c0;
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .current-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .current-item {
+      display: grid;
+      grid-template-columns: 70px 1fr;
+      gap: 16px;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .current-item:last-child { border-bottom: none; }
+    .current-key {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+    .current-val { color: #d7dce6; }
+
+    .tech-map {
+      display: grid;
+      gap: 10px;
+    }
+
+    .tech-row {
+      display: grid;
+      grid-template-columns: 190px 1fr;
+      align-items: center;
+      gap: 18px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .tech-row:last-child { border-bottom: none; }
+    .tech-name {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted2);
+    }
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.035);
+      color: #cbd2df;
+      font-family: var(--mono);
+      font-size: 11px;
+    }
 
     .project-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 1.2rem 1.4rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 1rem;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 430px;
+      gap: 22px;
+      padding: 0;
+      overflow: hidden;
     }
 
-    .project-card:hover {
-      border-color: var(--accent);
-      box-shadow: 0 2px 12px rgba(45,90,61,0.08);
+    .project-info {
+      padding: 28px;
     }
 
-    .project-name {
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 10px;
+      border: 1px solid rgba(16,185,129,0.25);
+      border-radius: 999px;
+      background: rgba(16,185,129,0.08);
+      color: var(--green2);
       font-family: var(--mono);
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--text);
-      margin-bottom: 0.3rem;
+      font-size: 11px;
+      margin-bottom: 16px;
+    }
+
+    .project-title {
+      font-size: 28px;
+      line-height: 1.25;
+      font-weight: 620;
+      letter-spacing: -0.04em;
+      margin-bottom: 14px;
     }
 
     .project-desc {
-      font-size: 0.88rem;
-      color: var(--muted);
-      line-height: 1.6;
+      max-width: 580px;
+      color: #b8bfca;
+      margin-bottom: 20px;
     }
 
-    .project-desc-zh {
-      font-size: 0.82rem;
-      color: #b0ada8;
-      margin-top: 0.2rem;
-    }
-
-    .project-tags {
-      display: flex;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-      margin-top: 0.6rem;
-    }
-
-    .ptag {
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      background: var(--accent-light);
-      color: var(--accent);
-      border: 1px solid #c8deca;
-      padding: 0.15rem 0.5rem;
-      border-radius: 2px;
-    }
-
-    .project-link {
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      color: var(--muted);
-      text-decoration: none;
-      white-space: nowrap;
-      padding: 0.3rem 0.6rem;
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      transition: all 0.2s;
-      flex-shrink: 0;
-    }
-
-    .project-link:hover {
-      color: var(--accent);
-      border-color: var(--accent);
-    }
-
-    /* ── BLOG ── */
-    .blog-card {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      padding: 1rem 0;
-      border-bottom: 1px solid var(--border);
-      text-decoration: none;
-      color: inherit;
-      transition: color 0.2s;
-    }
-
-    .blog-card:last-child { border-bottom: none; }
-    .blog-card:hover .blog-title { color: var(--accent); }
-
-    .blog-title {
-      font-size: 0.95rem;
-      transition: color 0.2s;
-    }
-
-    .blog-meta {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
-    .blog-more {
-      display: inline-block;
-      margin-top: 1.2rem;
-      font-family: var(--mono);
-      font-size: 0.8rem;
-      color: var(--accent);
-      text-decoration: none;
-      border-bottom: 1px solid var(--accent);
-      padding-bottom: 1px;
-    }
-
-    /* ── CONTACT ── */
-    .contact-grid {
+    .project-facts {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 0.8rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 20px 0 22px;
     }
 
-    .contact-item {
+    .fact {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.025);
+    }
+
+    .fact .k {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .fact .v {
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .mini-table {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 18px;
+    }
+
+    .mini-table-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .mini-table-row:last-child { border-bottom: none; }
+    .mini-table-row span {
+      padding: 9px 12px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted2);
+      border-right: 1px solid var(--border);
+    }
+    .mini-table-row span:last-child { border-right: none; }
+    .mini-table-row.head span { color: var(--muted); background: rgba(255,255,255,0.025); }
+    .mini-table-row strong { color: var(--blue2); font-weight: 500; }
+
+    .project-visual {
+      position: relative;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(59,130,246,0.14), transparent 34%),
+        linear-gradient(180deg, rgba(255,255,255,0.04), transparent),
+        var(--bg3);
+      border-left: 1px solid var(--border);
+      min-height: 460px;
+      overflow: hidden;
+    }
+
+    #projectCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      position: absolute;
+      inset: 0;
+    }
+
+    .visual-overlay {
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(10,11,14,0.72);
+      backdrop-filter: blur(16px);
+      padding: 16px;
+    }
+
+    .visual-overlay h4 {
+      font-size: 14px;
+      margin-bottom: 8px;
+      font-weight: 560;
+    }
+
+    .visual-overlay p {
+      font-size: 12px;
+      color: var(--muted2);
+      line-height: 1.65;
+    }
+
+    .space-map {
+      position: relative;
+      min-height: 330px;
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    .node {
+      position: absolute;
+      width: 170px;
+      padding: 14px 16px;
+      border: 1px solid var(--border2);
+      border-radius: 14px;
+      background: rgba(17,19,24,0.92);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.22);
+    }
+
+    .node.main {
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border-color: rgba(59,130,246,0.42);
+      background: rgba(59,130,246,0.10);
+    }
+
+    .node.blog { left: 7%; top: 13%; }
+    .node.github { right: 7%; top: 13%; }
+    .node.pan { left: 9%; bottom: 14%; }
+    .node.agent { right: 9%; bottom: 14%; border-color: rgba(139,92,246,0.36); }
+
+    .node-title {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text);
+      margin-bottom: 5px;
+    }
+
+    .node-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .space-lines {
+      position: absolute;
+      inset: 0;
+      opacity: 0.34;
+      pointer-events: none;
+    }
+
+    .placeholder-card {
+      min-height: 180px;
       display: flex;
       flex-direction: column;
-      gap: 0.2rem;
-      padding: 0.8rem 1rem;
-      background: var(--surface);
+      justify-content: space-between;
+    }
+
+    .placeholder-box {
+      height: 84px;
+      border: 1px dashed var(--border2);
+      border-radius: 12px;
+      margin-top: 18px;
+      background:
+        linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent),
+        rgba(255,255,255,0.015);
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    .assistant-card {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .chat-preview {
       border: 1px solid var(--border);
-      border-radius: 4px;
-      text-decoration: none;
-      transition: border-color 0.2s;
+      border-radius: 16px;
+      background: var(--bg3);
+      padding: 16px;
+      display: grid;
+      gap: 10px;
     }
 
-    .contact-item:hover { border-color: var(--accent); }
+    .bubble {
+      max-width: 92%;
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-size: 13px;
+      color: #cfd5df;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+    }
+    .bubble.me {
+      margin-left: auto;
+      background: rgba(59,130,246,0.12);
+      border-color: rgba(59,130,246,0.28);
+      color: var(--blue2);
+    }
+    .bubble.bot {
+      margin-right: auto;
+    }
 
-    .contact-platform {
+    .coming {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--purple2);
       font-family: var(--mono);
-      font-size: 0.7rem;
-      color: var(--muted);
-      letter-spacing: 0.08em;
+      font-size: 12px;
+      border: 1px solid rgba(139,92,246,0.28);
+      background: rgba(139,92,246,0.08);
+      padding: 8px 12px;
+      border-radius: 999px;
+      margin-top: 18px;
     }
 
-    .contact-value {
-      font-size: 0.88rem;
-      color: var(--text);
-    }
-
-    /* ── FOOTER ── */
     footer {
-      padding: 2.5rem 0;
-      text-align: center;
-      font-family: var(--mono);
-      font-size: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 34px 0 46px;
       color: var(--muted);
-      animation: fadeUp 0.7s 0.5s ease both;
+      font-family: var(--mono);
+      font-size: 12px;
     }
 
-    footer span { color: var(--accent2); }
-
-    /* ── ANIMATIONS ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
+    .footer-links {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
     }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 600px) {
-      .header-inner { flex-direction: column; }
-      .stack-grid { grid-template-columns: 1fr 1fr; }
+    .footer-links a:hover { color: var(--text); }
+
+    @media (max-width: 980px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-visual { height: 340px; }
+      .project-card { grid-template-columns: 1fr; }
+      .project-visual { min-height: 360px; border-left: none; border-top: 1px solid var(--border); }
+      .assistant-card { grid-template-columns: 1fr; }
+      .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .page { width: min(100% - 28px, 1120px); }
+      .topbar { align-items: flex-start; }
+      .nav { gap: 3px; font-size: 11px; flex-wrap: wrap; justify-content: flex-end; }
+      .nav a { padding: 7px 8px; }
+      .hero { padding-top: 44px; }
+      .hero-desc { font-size: 17px; }
+      .section-head { display: block; }
+      .section-note { margin-top: 10px; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .tech-row { grid-template-columns: 1fr; gap: 9px; }
+      .project-facts { grid-template-columns: 1fr; }
+      .mini-table-row { grid-template-columns: 1fr; }
+      .mini-table-row span { border-right: none; border-bottom: 1px solid var(--border); }
+      .mini-table-row span:last-child { border-bottom: none; }
+      .space-map { min-height: 560px; }
+      .node { width: calc(100% - 48px); left: 24px !important; right: auto !important; transform: none !important; }
+      .node.main { top: 32px; }
+      .node.blog { top: 130px; }
+      .node.github { top: 228px; }
+      .node.pan { top: 326px; bottom: auto; }
+      .node.agent { top: 424px; bottom: auto; }
+      footer { flex-direction: column; }
     }
   </style>
 </head>
 <body>
-<div class="container">
+  <div class="page">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="返回首页">
+        <span class="brand-mark">N</span>
+        <span>诺林｜Norin</span>
+      </a>
+      <nav class="nav" aria-label="主导航">
+        <a href="/about/">About</a>
+        <a href="https://blog.norin.me">Blog</a>
+        <a href="https://github.com/norinyan" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="mailto:norvynaustin@gmail.com">Email</a>
+      </nav>
+    </header>
 
-  <!-- HEADER -->
-  <header>
-    <div class="header-inner">
-      <div class="header-left">
-        <div class="tag">Graduate Researcher · Class of 2027</div>
-        <h1>Hi, I'm <em>Norin</em></h1>
-        <p class="subtitle">Robotics · Autonomous Driving · ROS2 · C++</p>
-        <p class="bio">
-          I build control systems for autonomous vehicles — from MPC algorithms to real-car convoy experiments.
-          Currently finishing my Master's at Zhongyuan University of Technology, focusing on multi-vehicle formation control.
-        </p>
-        <p class="bio-zh">控制理论与控制工程在读硕士，研究方向：智能网联车多车编队控制</p>
-        <nav>
-          <a href="https://blog.norin.me" class="primary">Blog →</a>
-          <a href="https://github.com/norinyan" target="_blank">GitHub</a>
-          <a href="mailto:hi@norin.me">hi@norin.me</a>
-        </nav>
-      </div>
-    </div>
-  </header>
-
-  <!-- TECH STACK -->
-  <section>
-    <div class="section-label">Tech Stack · 技术栈</div>
-    <div class="stack-grid">
-      <div class="stack-card">
-        <div class="stack-category">CONTROL</div>
-        <div class="stack-items">MPC · PID · LQR<br>Formation Control<br>Kinematic Models</div>
-      </div>
-      <div class="stack-card">
-        <div class="stack-category">ROBOTICS</div>
-        <div class="stack-items">ROS2 · CARLA<br>Python · C++<br>Real Vehicle Exp.</div>
-      </div>
-      <div class="stack-card">
-        <div class="stack-category">DEVOPS</div>
-        <div class="stack-items">Docker · Nginx<br>Linux · Git<br>Cloudflare</div>
-      </div>
-      <div class="stack-card">
-        <div class="stack-category">TOOLS</div>
-        <div class="stack-items">NumPy · cvxpy<br>Eigen3 · CMake<br>Matplotlib</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PROJECTS -->
-  <section>
-    <div class="section-label">Projects · 项目</div>
-    <div class="project-list">
-
-      <div class="project-card">
+    <main id="top">
+      <section class="hero">
         <div>
-          <div class="project-name">Real-Car Convoy Control</div>
-          <div class="project-desc">MPC + PID dual-layer controller for 3-vehicle electric SUV formation at 1.88 m/s on campus roads.</div>
-          <div class="project-desc-zh">三辆纯电动SUV实车编队，MPC+PID双层控制，ROS2+Python，校园400米路线验证</div>
-          <div class="project-tags">
-            <span class="ptag">ROS2</span>
-            <span class="ptag">MPC</span>
-            <span class="ptag">Real Vehicle</span>
-            <span class="ptag">Python</span>
+          <div class="eyebrow">Personal Showcase</div>
+          <h1 class="hero-title">Norin<span>Space</span></h1>
+          <p class="hero-desc">个人研究、项目与想法的展示空间。</p>
+          <p class="hero-meta">控制 · 自动驾驶 · 系统构建 · AI 工具</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="/about/">About</a>
+            <a class="btn" href="https://blog.norin.me">Blog</a>
+            <a class="btn" href="https://github.com/norinyan" target="_blank" rel="noreferrer">GitHub</a>
+            <a class="btn" href="mailto:norvynaustin@gmail.com">Email</a>
           </div>
         </div>
-        <a class="project-link" href="https://github.com/norinyan" target="_blank">GitHub ↗</a>
-      </div>
 
-      <div class="project-card">
-        <div>
-          <div class="project-name">Modular Motion Control Sim</div>
-          <div class="project-desc">Strategy-pattern framework decoupling vehicle model, algorithm, and path. Supports PID, MPC, Stanley, LQR.</div>
-          <div class="project-desc-zh">策略模式解耦模型/算法/路径的模块化仿真框架，支持多种控制器对比评测</div>
-          <div class="project-tags">
-            <span class="ptag">Python</span>
-            <span class="ptag">PID</span>
-            <span class="ptag">MPC</span>
-            <span class="ptag">Simulation</span>
+        <div class="hero-visual" aria-label="抽象轨迹与控制系统视觉图">
+          <canvas id="heroCanvas"></canvas>
+          <div class="visual-label">Trajectory · Control · Agent</div>
+          <div class="visual-card">
+            <div class="small">Now Building</div>
+            <div class="big">个人数字空间与云端 AI 助手</div>
           </div>
         </div>
-        <a class="project-link" href="https://github.com/norinyan" target="_blank">GitHub ↗</a>
-      </div>
+      </section>
 
-      <div class="project-card">
-        <div>
-          <div class="project-name">CARLA Formation Sim</div>
-          <div class="project-desc">3-vehicle longitudinal convoy simulation in CARLA Town3, CTH spacing strategy with Python.</div>
-          <div class="project-desc-zh">CARLA仿真环境三车纵向编队，CTH间距策略，Town3长直线场景</div>
-          <div class="project-tags">
-            <span class="ptag">CARLA</span>
-            <span class="ptag">Python</span>
-            <span class="ptag">CTH</span>
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <div class="section-label">Current</div>
+            <h2 class="section-title">当前状态</h2>
+          </div>
+          <p class="section-note">这一块展示“这个人正在做什么”，不是简历，也不是笔记目录。</p>
+        </div>
+        <div class="card k-blue">
+          <div class="current-list">
+            <div class="current-item">
+              <div class="current-key">研究</div>
+              <div class="current-val">智能网联车编队控制、MPC、CARLA / ROS2</div>
+            </div>
+            <div class="current-item">
+              <div class="current-key">项目</div>
+              <div class="current-val">CARLA 轨迹跟踪控制平台、TinyReactor</div>
+            </div>
+            <div class="current-item">
+              <div class="current-key">构建</div>
+              <div class="current-val">个人网站、云端工具、AI 虚拟人</div>
+            </div>
+            <div class="current-item">
+              <div class="current-key">记录</div>
+              <div class="current-val">技术文章、实验过程、项目复盘</div>
+            </div>
           </div>
         </div>
-        <a class="project-link" href="https://github.com/norinyan" target="_blank">GitHub ↗</a>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <div class="section-label">Tech Map</div>
+            <h2 class="section-title">技术坐标</h2>
+          </div>
+          <p class="section-note">用能力坐标展示技术栈，避免普通技能清单式堆砌。</p>
+        </div>
+        <div class="card k-green">
+          <div class="tech-map">
+            <div class="tech-row">
+              <div class="tech-name">Control System</div>
+              <div class="tech-tags">
+                <span class="chip">MPC</span><span class="chip">PID</span><span class="chip">LQR</span><span class="chip">Pure Pursuit</span><span class="chip">Stanley</span>
+              </div>
+            </div>
+            <div class="tech-row">
+              <div class="tech-name">Autonomous Driving</div>
+              <div class="tech-tags">
+                <span class="chip">CARLA</span><span class="chip">ROS2</span><span class="chip">轨迹跟踪</span><span class="chip">编队控制</span><span class="chip">实车实验</span>
+              </div>
+            </div>
+            <div class="tech-row">
+              <div class="tech-name">Engineering System</div>
+              <div class="tech-tags">
+                <span class="chip">Linux</span><span class="chip">Docker</span><span class="chip">Nginx</span><span class="chip">Git</span><span class="chip">CMake</span>
+              </div>
+            </div>
+            <div class="tech-row">
+              <div class="tech-name">Programming</div>
+              <div class="tech-tags">
+                <span class="chip">Python</span><span class="chip">C++</span><span class="chip">Shell</span>
+              </div>
+            </div>
+            <div class="tech-row">
+              <div class="tech-name">AI Tools</div>
+              <div class="tech-tags">
+                <span class="chip">LLM API</span><span class="chip">Agent</span><span class="chip">RAG</span><span class="chip">个人虚拟人</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <div class="section-label">Featured Project</div>
+            <h2 class="section-title">精选项目</h2>
+          </div>
+          <p class="section-note">首页第一个正式成果展示：已完成、可运行、有对比、有可视化。</p>
+        </div>
+
+        <div class="card project-card">
+          <div class="project-info">
+            <div class="status"><span class="dot green"></span>PROJECT · 已完成</div>
+            <h3 class="project-title">CARLA 轨迹跟踪控制平台</h3>
+            <p class="project-desc">
+              基于 CARLA + ROS 2 的无人车轨迹跟踪控制项目，支持多种横向控制器快速切换、对比测试与实时可视化分析。给定离线参考轨迹后，控制 ego_vehicle 在 Town04 中稳定完成路线跟踪。
+            </p>
+
+            <div class="project-facts">
+              <div class="fact">
+                <div class="k">Controllers</div>
+                <div class="v">PD / Pure Pursuit / Stanley / LQR / MPC + PID</div>
+              </div>
+              <div class="fact">
+                <div class="k">Scene</div>
+                <div class="v">CARLA Town04 · Lincoln MKZ 2020</div>
+              </div>
+              <div class="fact">
+                <div class="k">Routes</div>
+                <div class="v">A 直道 / B 综合 / C 环形多弯道</div>
+              </div>
+              <div class="fact">
+                <div class="k">Output</div>
+                <div class="v">速度误差 · 航向误差 · 转向平滑度 · 轨迹图</div>
+              </div>
+            </div>
+
+            <div class="mini-table" aria-label="控制器对比摘要">
+              <div class="mini-table-row head"><span>指标</span><span>表现突出</span><span>说明</span></div>
+              <div class="mini-table-row"><span>完成用时</span><span><strong>Stanley</strong></span><span>31.5 s</span></div>
+              <div class="mini-table-row"><span>平均偏航误差</span><span><strong>MPC</strong></span><span>1.91°</span></div>
+              <div class="mini-table-row"><span>转向平滑度</span><span><strong>Pure Pursuit</strong></span><span>0.0082</span></div>
+            </div>
+
+            <div class="hero-actions" style="margin-top:22px">
+              <a class="btn primary" href="https://github.com/norinyan/carla_vehicle_control" target="_blank" rel="noreferrer">查看 GitHub</a>
+              <a class="btn" href="https://github.com/norinyan/carla_vehicle_control/tree/main/results" target="_blank" rel="noreferrer">查看结果</a>
+            </div>
+          </div>
+
+          <div class="project-visual" aria-label="CARLA 轨迹跟踪可视化占位图">
+            <canvas id="projectCanvas"></canvas>
+            <div class="visual-overlay">
+              <h4>控制器对比可视化</h4>
+              <p>后续可替换为 benchmark.gif、CARLA 录屏、交互式对比图或论文级结果图。当前先用抽象轨迹动画作为展示占位。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <div class="section-label">Showcase</div>
+            <h2 class="section-title">展示预留区</h2>
+          </div>
+          <p class="section-note">后续放论文图、实验图、控制动画、服务器架构图，不急着填满。</p>
+        </div>
+        <div class="grid-2">
+          <div class="card placeholder-card k-blue">
+            <div>
+              <div class="card-tag"><span class="dot"></span>Research</div>
+              <h3>研究成果</h3>
+              <p>后续放论文结论图、控制框图、实车编队效果图、误差曲线。</p>
+            </div>
+            <div class="placeholder-box">成果图预留</div>
+          </div>
+          <div class="card placeholder-card k-purple">
+            <div>
+              <div class="card-tag"><span class="dot purple"></span>Visual Lab</div>
+              <h3>动态实验</h3>
+              <p>后续放 MPC 动画、控制器对比、CARLA 交互图、轨迹演示。</p>
+            </div>
+            <div class="placeholder-box">动态图预留</div>
+          </div>
+          <div class="card placeholder-card k-green">
+            <div>
+              <div class="card-tag"><span class="dot green"></span>System</div>
+              <h3>系统构建</h3>
+              <p>后续放服务器架构、网站结构、云服务拓扑和部署流程。</p>
+            </div>
+            <div class="placeholder-box">架构图预留</div>
+          </div>
+          <div class="card placeholder-card">
+            <div>
+              <div class="card-tag"><span class="dot amber"></span>Tools</div>
+              <h3>个人工具</h3>
+              <p>后续放 AI 工具、脚本、自动化流程和小型工具项目。</p>
+            </div>
+            <div class="placeholder-box">工具展示预留</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <div class="section-label">Digital Space</div>
+            <h2 class="section-title">个人数字空间</h2>
+          </div>
+          <p class="section-note">把主站、博客、云盘、代码仓库和未来 AI 助手统一成一个数字中枢。</p>
+        </div>
+        <div class="card space-map">
+          <svg class="space-lines" viewBox="0 0 1000 330" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M500 165 L150 70" stroke="rgba(59,130,246,0.65)" stroke-width="1" stroke-dasharray="6 7" fill="none" />
+            <path d="M500 165 L850 70" stroke="rgba(16,185,129,0.62)" stroke-width="1" stroke-dasharray="6 7" fill="none" />
+            <path d="M500 165 L165 260" stroke="rgba(245,158,11,0.56)" stroke-width="1" stroke-dasharray="6 7" fill="none" />
+            <path d="M500 165 L835 260" stroke="rgba(139,92,246,0.72)" stroke-width="1" stroke-dasharray="6 7" fill="none" />
+          </svg>
+          <a class="node main" href="https://norin.me">
+            <div class="node-title">norin.me</div>
+            <div class="node-desc">主站 / 展示平台</div>
+          </a>
+          <a class="node blog" href="https://blog.norin.me">
+            <div class="node-title">blog.norin.me</div>
+            <div class="node-desc">博客 / 技术文章</div>
+          </a>
+          <a class="node github" href="https://github.com/norinyan" target="_blank" rel="noreferrer">
+            <div class="node-title">GitHub</div>
+            <div class="node-desc">项目 / 代码仓库</div>
+          </a>
+          <a class="node pan" href="https://pan.norin.me" target="_blank" rel="noreferrer">
+            <div class="node-title">pan.norin.me</div>
+            <div class="node-desc">云盘 / 文件入口</div>
+          </a>
+          <div class="node agent">
+            <div class="node-title">AI Agent</div>
+            <div class="node-desc">预留 / 个人虚拟人入口</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <div class="section-label">AI Assistant</div>
+            <h2 class="section-title">Norin AI Assistant</h2>
+          </div>
+          <p class="section-note">先预留入口，后续接你的中转站 API 和模型 Key，用来做站内问答。</p>
+        </div>
+        <div class="card assistant-card k-purple">
+          <div>
+            <div class="card-tag"><span class="dot purple"></span>Coming Soon</div>
+            <h3>个人 AI 助手</h3>
+            <p>
+              一个正在构建中的网站问答助手。后续将接入模型 API，用于回答关于我、项目、文章、研究方向和个人知识库的问题。
+            </p>
+            <div class="coming">状态：规划中</div>
+          </div>
+          <div class="chat-preview" aria-label="AI 助手对话预览">
+            <div class="bubble me">这个 CARLA 项目实现了哪些控制器？</div>
+            <div class="bubble bot">目前支持 PD、Pure Pursuit、Stanley、LQR、MPC 横向控制器，纵向统一使用 PID。</div>
+            <div class="bubble me">能解释一下 MPC 和 Stanley 的差异吗？</div>
+            <div class="bubble bot">可以。后续这里会接入站内知识库和项目文档进行回答。</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div>© 2026 诺林｜Norin</div>
+      <div class="footer-links">
+        <a href="https://blog.norin.me">Blog</a>
+        <a href="https://github.com/norinyan" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="mailto:norvynaustin@gmail.com">Email</a>
+        <a href="https://pan.norin.me" target="_blank" rel="noreferrer">Pan</a>
       </div>
+    </footer>
+  </div>
 
-    </div>
-  </section>
+  <script>
+    function fitCanvas(canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      const ctx = canvas.getContext('2d');
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { ctx, w: rect.width, h: rect.height };
+    }
 
-  <!-- BLOG -->
-  <section>
-    <div class="section-label">Recent Posts · 近期文章</div>
-    <a class="blog-card" href="https://blog.norin.me">
-      <span class="blog-title">PID控制器完全指南 — 从原理到实车调参</span>
-      <span class="blog-meta">Control</span>
-    </a>
-    <a class="blog-card" href="https://blog.norin.me">
-      <span class="blog-title">ROS2 + Docker 开发环境搭建教程</span>
-      <span class="blog-meta">DevOps</span>
-    </a>
-    <a class="blog-card" href="https://blog.norin.me">
-      <span class="blog-title">Nginx 反向代理配置：从零到HTTPS</span>
-      <span class="blog-meta">Server</span>
-    </a>
-    <a class="blog-more" href="https://blog.norin.me">All posts →</a>
-  </section>
+    function drawHero(t) {
+      const canvas = document.getElementById('heroCanvas');
+      if (!canvas) return;
+      const { ctx, w, h } = fitCanvas(canvas);
+      ctx.clearRect(0, 0, w, h);
 
-  <!-- CONTACT -->
-  <section>
-    <div class="section-label">Contact · 联系方式</div>
-    <div class="contact-grid">
-      <a class="contact-item" href="mailto:hi@norin.me">
-        <span class="contact-platform">EMAIL</span>
-        <span class="contact-value">hi@norin.me</span>
-      </a>
-      <a class="contact-item" href="https://github.com/norinyan" target="_blank">
-        <span class="contact-platform">GITHUB</span>
-        <span class="contact-value">github.com/norinyan</span>
-      </a>
-      <a class="contact-item" href="https://blog.norin.me" target="_blank">
-        <span class="contact-platform">BLOG</span>
-        <span class="contact-value">blog.norin.me</span>
-      </a>
-      <a class="contact-item" href="https://pan.norin.me" target="_blank">
-        <span class="contact-platform">PAN</span>
-        <span class="contact-value">pan.norin.me</span>
-      </a>
-    </div>
-  </section>
+      ctx.strokeStyle = 'rgba(255,255,255,0.045)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < w; x += 34) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+      }
+      for (let y = 0; y < h; y += 34) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      }
 
-  <!-- FOOTER -->
-  <footer>
-    <p>© 2026 Norin · Built with <span>♥</span> · norin.me</p>
-  </footer>
+      const cx = w * 0.50;
+      const cy = h * 0.52;
+      const scale = Math.min(w, h) / 420;
 
-</div>
+      function pathPoint(i, offset) {
+        const a = i * 0.065 + offset;
+        const r = (72 + 58 * Math.sin(i * 0.022 + offset)) * scale;
+        return {
+          x: cx + Math.cos(a) * r + Math.sin(i * 0.04) * 32 * scale,
+          y: cy + Math.sin(a) * r * 0.64 + Math.cos(i * 0.031) * 22 * scale
+        };
+      }
+
+      const grad = ctx.createLinearGradient(40, 0, w - 40, h);
+      grad.addColorStop(0, 'rgba(59,130,246,0.85)');
+      grad.addColorStop(0.55, 'rgba(16,185,129,0.70)');
+      grad.addColorStop(1, 'rgba(139,92,246,0.80)');
+
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = grad;
+      ctx.beginPath();
+      for (let i = 0; i < 170; i++) {
+        const p = pathPoint(i, 0.4);
+        if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+
+      for (let k = 0; k < 4; k++) {
+        ctx.strokeStyle = `rgba(59,130,246,${0.11 - k * 0.018})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let i = 0; i < 95; i++) {
+          const p = pathPoint(i, 0.4 + k * 0.16 + Math.sin(t * 0.001) * 0.08);
+          p.x += (k - 1.5) * 15 * scale;
+          p.y -= (k + 1) * 11 * scale;
+          if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+        }
+        ctx.stroke();
+      }
+
+      const dotIndex = (t * 0.03) % 150;
+      for (let j = 0; j < 3; j++) {
+        const p = pathPoint(dotIndex - j * 12, 0.4);
+        ctx.fillStyle = j === 0 ? '#93c5fd' : 'rgba(147,197,253,0.48)';
+        ctx.beginPath(); ctx.arc(p.x, p.y, j === 0 ? 5 : 3.5, 0, Math.PI * 2); ctx.fill();
+      }
+
+      ctx.font = '12px SFMono-Regular, Consolas, monospace';
+      ctx.fillStyle = 'rgba(232,234,240,0.52)';
+      ctx.fillText('x(k+1) = f(x(k), u(k))', 28, h - 34);
+      ctx.fillStyle = 'rgba(147,197,253,0.70)';
+      ctx.fillText('receding horizon', 28, h - 16);
+    }
+
+    function drawProject(t) {
+      const canvas = document.getElementById('projectCanvas');
+      if (!canvas) return;
+      const { ctx, w, h } = fitCanvas(canvas);
+      ctx.clearRect(0, 0, w, h);
+
+      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+      for (let y = 40; y < h; y += 42) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      }
+
+      const pad = 38;
+      const centerY = h * 0.45;
+      const points = [];
+      for (let i = 0; i <= 120; i++) {
+        const x = pad + (w - pad * 2) * (i / 120);
+        const y = centerY + Math.sin(i * 0.105) * 54 + Math.sin(i * 0.033) * 22;
+        points.push({ x, y });
+      }
+
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+      ctx.setLineDash([7, 6]);
+      ctx.beginPath();
+      points.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y));
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      const colors = ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#93c5fd'];
+      const names = ['PD', 'PP', 'ST', 'LQR', 'MPC'];
+      colors.forEach((color, k) => {
+        ctx.strokeStyle = color;
+        ctx.globalAlpha = 0.60 - k * 0.05;
+        ctx.lineWidth = k === 4 ? 2.4 : 1.5;
+        ctx.beginPath();
+        points.forEach((p, i) => {
+          const y = p.y + Math.sin(i * 0.08 + k * 0.7 + t * 0.002) * (5 + k * 1.2) + (k - 2) * 4;
+          if (i === 0) ctx.moveTo(p.x, y); else ctx.lineTo(p.x, y);
+        });
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+
+        ctx.fillStyle = color;
+        ctx.font = '11px SFMono-Regular, Consolas, monospace';
+        ctx.fillText(names[k], 26, 26 + k * 19);
+      });
+
+      const idx = Math.floor((t * 0.035) % points.length);
+      const p = points[idx];
+      ctx.fillStyle = '#93c5fd';
+      ctx.beginPath(); ctx.arc(p.x, p.y, 6, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = 'rgba(147,197,253,0.16)';
+      ctx.beginPath(); ctx.arc(p.x, p.y, 16, 0, Math.PI * 2); ctx.fill();
+
+      ctx.font = '12px SFMono-Regular, Consolas, monospace';
+      ctx.fillStyle = 'rgba(232,234,240,0.58)';
+      ctx.fillText('Town04 · Route C · controller benchmark', pad, h - 28);
+    }
+
+    let raf;
+    function loop(t) {
+      drawHero(t);
+      drawProject(t);
+      raf = requestAnimationFrame(loop);
+    }
+
+    window.addEventListener('load', () => {
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduceMotion) {
+        drawHero(0);
+        drawProject(0);
+      } else {
+        loop(0);
+      }
+    });
+    window.addEventListener('resize', () => {
+      drawHero(0);
+      drawProject(0);
+    });
+  </script>
 </body>
 </html>
