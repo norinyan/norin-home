@@ -394,6 +394,140 @@
     }
     .current-val { color: #d7dce6; }
 
+    .current-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 230px;
+      gap: 22px;
+      align-items: center;
+    }
+
+    .focus-widget {
+      position: relative;
+      min-height: 210px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 50% 32%, rgba(59,130,246,0.14), transparent 32%),
+        linear-gradient(180deg, rgba(255,255,255,0.045), transparent),
+        rgba(255,255,255,0.02);
+      overflow: hidden;
+    }
+
+    .focus-widget::before {
+      content: "";
+      position: absolute;
+      inset: 16px;
+      border-radius: 50%;
+      border: 1px dashed rgba(147,197,253,0.22);
+      animation: orbitBreath 4s ease-in-out infinite;
+    }
+
+    .focus-widget::after {
+      content: "";
+      position: absolute;
+      left: 16%;
+      right: 16%;
+      bottom: 44px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(147,197,253,0.55), transparent);
+      animation: scanLine 2.8s ease-in-out infinite;
+    }
+
+    .focus-person {
+      position: absolute;
+      left: 50%;
+      top: 42%;
+      width: 116px;
+      height: 126px;
+      transform: translate(-50%, -50%);
+    }
+
+    .focus-head {
+      position: absolute;
+      left: 41px;
+      top: 8px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, rgba(147,197,253,0.96), rgba(139,92,246,0.74));
+      box-shadow: 0 0 30px rgba(59,130,246,0.34);
+      animation: focusBreathe 3.2s ease-in-out infinite;
+    }
+
+    .focus-body {
+      position: absolute;
+      left: 32px;
+      top: 46px;
+      width: 52px;
+      height: 58px;
+      border-radius: 24px 24px 10px 10px;
+      border: 1px solid rgba(147,197,253,0.30);
+      background: linear-gradient(180deg, rgba(59,130,246,0.16), rgba(139,92,246,0.08));
+    }
+
+    .focus-laptop {
+      position: absolute;
+      left: 18px;
+      top: 92px;
+      width: 80px;
+      height: 30px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(10,11,14,0.72);
+      box-shadow: 0 18px 36px rgba(0,0,0,0.28);
+    }
+
+    .focus-laptop::before {
+      content: "";
+      position: absolute;
+      left: 12px;
+      top: 9px;
+      width: 42px;
+      height: 2px;
+      border-radius: 99px;
+      background: var(--green2);
+      box-shadow: 18px 0 0 rgba(147,197,253,0.45), 36px 0 0 rgba(196,181,253,0.35);
+      animation: typingDots 1.8s steps(3) infinite;
+    }
+
+    .focus-dot {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--blue2);
+      box-shadow: 0 0 18px rgba(147,197,253,0.65);
+    }
+    .focus-dot.d1 { left: 32px; top: 34px; animation: floatDot 3.4s ease-in-out infinite; }
+    .focus-dot.d2 { right: 34px; top: 72px; background: var(--purple2); animation: floatDot 3.8s ease-in-out infinite reverse; }
+    .focus-dot.d3 { left: 54px; bottom: 34px; background: var(--green2); animation: floatDot 4.2s ease-in-out infinite; }
+
+    @keyframes focusBreathe {
+      0%, 100% { transform: translateY(0); opacity: 0.92; }
+      50% { transform: translateY(-4px); opacity: 1; }
+    }
+
+    @keyframes orbitBreath {
+      0%, 100% { transform: scale(0.96); opacity: 0.48; }
+      50% { transform: scale(1.03); opacity: 0.76; }
+    }
+
+    @keyframes scanLine {
+      0%, 100% { opacity: 0.28; transform: translateY(0); }
+      50% { opacity: 0.9; transform: translateY(-10px); }
+    }
+
+    @keyframes typingDots {
+      0% { width: 14px; }
+      50% { width: 56px; }
+      100% { width: 14px; }
+    }
+
+    @keyframes floatDot {
+      0%, 100% { transform: translate(0,0); opacity: 0.55; }
+      50% { transform: translate(8px,-10px); opacity: 1; }
+    }
+
     .tech-map {
       display: grid;
       gap: 10px;
@@ -428,6 +562,85 @@
       color: #cbd2df;
       font-family: var(--mono);
       font-size: 11px;
+    }
+
+
+    .tech-overview {
+      display: grid;
+      grid-template-columns: 360px minmax(0, 1fr);
+      gap: 28px;
+      align-items: center;
+    }
+
+    .tech-chart {
+      position: relative;
+      height: 300px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+        radial-gradient(circle at 68% 28%, rgba(59,130,246,0.13), transparent 30%),
+        rgba(255,255,255,0.018);
+      background-size: 34px 34px, 34px 34px, auto, auto;
+      overflow: hidden;
+    }
+
+    .tech-chart::before,
+    .tech-chart::after {
+      content: "";
+      position: absolute;
+      background: rgba(232,234,240,0.18);
+    }
+    .tech-chart::before { left: 42px; right: 24px; bottom: 46px; height: 1px; }
+    .tech-chart::after { left: 42px; top: 26px; bottom: 46px; width: 1px; }
+
+    .axis-label {
+      position: absolute;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+    }
+    .axis-label.x { right: 22px; bottom: 18px; }
+    .axis-label.y { left: 16px; top: 18px; writing-mode: vertical-rl; transform: rotate(180deg); }
+
+    .tech-point {
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      transform: translate(-50%, -50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .tech-point::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--c, var(--blue2));
+      box-shadow: 0 0 22px color-mix(in srgb, var(--c, var(--blue2)), transparent 35%);
+    }
+
+    .tech-point.control { --c: var(--blue2); }
+    .tech-point.auto { --c: var(--green2); }
+    .tech-point.system { --c: var(--purple2); }
+    .tech-point.ai { --c: #f0abfc; }
+    .tech-point.code { --c: #fbbf24; }
+
+    .tech-path {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.62;
     }
 
     .project-card {
@@ -724,7 +937,11 @@
       .section-head { display: block; }
       .section-note { margin-top: 10px; }
       .grid-2 { grid-template-columns: 1fr; }
+      .tech-overview { grid-template-columns: 1fr; }
+      .tech-chart { height: 260px; }
       .tech-row { grid-template-columns: 1fr; gap: 9px; }
+      .current-panel { grid-template-columns: 1fr; }
+      .focus-widget { min-height: 180px; }
       .project-facts { grid-template-columns: 1fr; }
       .mini-table-row { grid-template-columns: 1fr; }
       .mini-table-row span { border-right: none; border-bottom: 1px solid var(--border); }
@@ -760,8 +977,8 @@
         <div>
           <div class="eyebrow">Personal Showcase</div>
           <h1 class="hero-title">Norin<span>Space</span></h1>
-          <p class="hero-desc">个人研究、项目与想法的展示空间。</p>
-          <p class="hero-meta">控制 · 自动驾驶 · 系统构建 · AI 工具</p>
+          <p class="hero-desc">“What I cannot create, I do not understand.”</p>
+          <p class="hero-meta">Richard Feynman · 控制 · 自动驾驶 · 系统构建 · AI 工具</p>
           <div class="hero-actions">
             <a class="btn primary" href="/about/">About</a>
             <a class="btn" href="https://blog.norin.me">Blog</a>
@@ -773,23 +990,19 @@
         <div class="hero-visual" aria-label="抽象轨迹与控制系统视觉图">
           <canvas id="heroCanvas"></canvas>
           <div class="visual-label">Trajectory · Control · Agent</div>
-          <div class="visual-card">
-            <div class="small">Now Building</div>
-            <div class="big">个人数字空间与云端 AI 助手</div>
-          </div>
         </div>
       </section>
 
       <section class="section">
         <div class="section-head">
           <div>
-            <div class="section-label">Current</div>
-            <h2 class="section-title">当前状态</h2>
+            <div class="section-label">Current Status</div>
+            <h2 class="section-title">持续构建</h2>
           </div>
-          <p class="section-note">这一块展示“这个人正在做什么”，不是简历，也不是笔记目录。</p>
         </div>
         <div class="card k-blue">
-          <div class="current-list">
+          <div class="current-panel">
+            <div class="current-list">
             <div class="current-item">
               <div class="current-key">研究</div>
               <div class="current-val">智能网联车编队控制、MPC、CARLA / ROS2</div>
@@ -806,6 +1019,17 @@
               <div class="current-key">记录</div>
               <div class="current-val">技术文章、实验过程、项目复盘</div>
             </div>
+            </div>
+            <div class="focus-widget" aria-hidden="true">
+              <div class="focus-dot d1"></div>
+              <div class="focus-dot d2"></div>
+              <div class="focus-dot d3"></div>
+              <div class="focus-person">
+                <div class="focus-head"></div>
+                <div class="focus-body"></div>
+                <div class="focus-laptop"></div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -813,42 +1037,56 @@
       <section class="section">
         <div class="section-head">
           <div>
-            <div class="section-label">Tech Map</div>
-            <h2 class="section-title">技术坐标</h2>
+            <div class="section-label">技术栈</div>
+            <h2 class="section-title">技术栈</h2>
           </div>
-          <p class="section-note">用能力坐标展示技术栈，避免普通技能清单式堆砌。</p>
         </div>
         <div class="card k-green">
-          <div class="tech-map">
+          <div class="tech-overview">
+            <div class="tech-chart" aria-label="技术栈图">
+              <svg class="tech-path" viewBox="0 0 360 300" preserveAspectRatio="none">
+                <path d="M82 218 C128 166, 152 126, 216 92 S292 88, 322 58" fill="none" stroke="rgba(147,197,253,0.42)" stroke-width="1.5" stroke-dasharray="6 7" />
+                <path d="M112 204 C162 218, 196 186, 242 148 S286 126, 306 104" fill="none" stroke="rgba(110,231,183,0.28)" stroke-width="1.2" />
+              </svg>
+              <span class="axis-label y">研究</span>
+              <span class="axis-label x">工程</span>
+              <span class="tech-point control" style="--x: 56%; --y: 28%;">控制</span>
+              <span class="tech-point auto" style="--x: 72%; --y: 38%;">驾驶</span>
+              <span class="tech-point system" style="--x: 64%; --y: 70%;">系统</span>
+              <span class="tech-point ai" style="--x: 82%; --y: 20%;">AI 工具</span>
+              <span class="tech-point code" style="--x: 34%; --y: 74%;">代码</span>
+            </div>
+            <div class="tech-map">
             <div class="tech-row">
-              <div class="tech-name">Control System</div>
+              <div class="tech-name">控制系统</div>
               <div class="tech-tags">
                 <span class="chip">MPC</span><span class="chip">PID</span><span class="chip">LQR</span><span class="chip">Pure Pursuit</span><span class="chip">Stanley</span>
               </div>
             </div>
             <div class="tech-row">
-              <div class="tech-name">Autonomous Driving</div>
+              <div class="tech-name">自动驾驶</div>
               <div class="tech-tags">
                 <span class="chip">CARLA</span><span class="chip">ROS2</span><span class="chip">轨迹跟踪</span><span class="chip">编队控制</span><span class="chip">实车实验</span>
               </div>
             </div>
             <div class="tech-row">
-              <div class="tech-name">Engineering System</div>
+              <div class="tech-name">工程系统</div>
               <div class="tech-tags">
                 <span class="chip">Linux</span><span class="chip">Docker</span><span class="chip">Nginx</span><span class="chip">Git</span><span class="chip">CMake</span>
               </div>
             </div>
             <div class="tech-row">
-              <div class="tech-name">Programming</div>
+              <div class="tech-name">编程语言</div>
               <div class="tech-tags">
                 <span class="chip">Python</span><span class="chip">C++</span><span class="chip">Shell</span>
               </div>
             </div>
             <div class="tech-row">
-              <div class="tech-name">AI Tools</div>
+              <div class="tech-name">AI 工具</div>
               <div class="tech-tags">
                 <span class="chip">LLM API</span><span class="chip">Agent</span><span class="chip">RAG</span><span class="chip">个人虚拟人</span>
               </div>
+            </div>
             </div>
           </div>
         </div>
@@ -857,35 +1095,33 @@
       <section class="section">
         <div class="section-head">
           <div>
-            <div class="section-label">Featured Project</div>
-            <h2 class="section-title">精选项目</h2>
+            <div class="section-label">成果展示</div>
+            <h2 class="section-title">No.01｜多控制算法轨迹跟踪评测</h2>
           </div>
-          <p class="section-note">首页第一个正式成果展示：已完成、可运行、有对比、有可视化。</p>
         </div>
 
         <div class="card project-card">
           <div class="project-info">
-            <div class="status"><span class="dot green"></span>PROJECT · 已完成</div>
-            <h3 class="project-title">CARLA 轨迹跟踪控制平台</h3>
+            <div class="status"><span class="dot green"></span>项目 · 已完成</div>
             <p class="project-desc">
               基于 CARLA + ROS 2 的无人车轨迹跟踪控制项目，支持多种横向控制器快速切换、对比测试与实时可视化分析。给定离线参考轨迹后，控制 ego_vehicle 在 Town04 中稳定完成路线跟踪。
             </p>
 
             <div class="project-facts">
               <div class="fact">
-                <div class="k">Controllers</div>
+                <div class="k">控制器</div>
                 <div class="v">PD / Pure Pursuit / Stanley / LQR / MPC + PID</div>
               </div>
               <div class="fact">
-                <div class="k">Scene</div>
+                <div class="k">场景</div>
                 <div class="v">CARLA Town04 · Lincoln MKZ 2020</div>
               </div>
               <div class="fact">
-                <div class="k">Routes</div>
+                <div class="k">路线</div>
                 <div class="v">A 直道 / B 综合 / C 环形多弯道</div>
               </div>
               <div class="fact">
-                <div class="k">Output</div>
+                <div class="k">输出</div>
                 <div class="v">速度误差 · 航向误差 · 转向平滑度 · 轨迹图</div>
               </div>
             </div>
@@ -916,41 +1152,40 @@
       <section class="section">
         <div class="section-head">
           <div>
-            <div class="section-label">Showcase</div>
+            <div class="section-label">展示预留</div>
             <h2 class="section-title">展示预留区</h2>
           </div>
-          <p class="section-note">后续放论文图、实验图、控制动画、服务器架构图，不急着填满。</p>
         </div>
         <div class="grid-2">
           <div class="card placeholder-card k-blue">
             <div>
-              <div class="card-tag"><span class="dot"></span>Research</div>
+              <div class="card-tag"><span class="dot"></span>研究</div>
               <h3>研究成果</h3>
-              <p>后续放论文结论图、控制框图、实车编队效果图、误差曲线。</p>
+              <p>论文结论、控制框图、实车编队效果图、误差曲线。</p>
             </div>
             <div class="placeholder-box">成果图预留</div>
           </div>
           <div class="card placeholder-card k-purple">
             <div>
-              <div class="card-tag"><span class="dot purple"></span>Visual Lab</div>
+              <div class="card-tag"><span class="dot purple"></span>动态实验</div>
               <h3>动态实验</h3>
-              <p>后续放 MPC 动画、控制器对比、CARLA 交互图、轨迹演示。</p>
+              <p>MPC 动画、控制器对比、CARLA 交互图、轨迹演示。</p>
             </div>
             <div class="placeholder-box">动态图预留</div>
           </div>
           <div class="card placeholder-card k-green">
             <div>
-              <div class="card-tag"><span class="dot green"></span>System</div>
+              <div class="card-tag"><span class="dot green"></span>系统</div>
               <h3>系统构建</h3>
-              <p>后续放服务器架构、网站结构、云服务拓扑和部署流程。</p>
+              <p>服务器架构、网站结构、云服务拓扑和部署流程。</p>
             </div>
             <div class="placeholder-box">架构图预留</div>
           </div>
           <div class="card placeholder-card">
             <div>
-              <div class="card-tag"><span class="dot amber"></span>Tools</div>
+              <div class="card-tag"><span class="dot amber"></span>工具</div>
               <h3>个人工具</h3>
-              <p>后续放 AI 工具、脚本、自动化流程和小型工具项目。</p>
+              <p>AI 工具、脚本、自动化流程和小型工具项目。</p>
             </div>
             <div class="placeholder-box">工具展示预留</div>
           </div>
@@ -960,63 +1195,22 @@
       <section class="section">
         <div class="section-head">
           <div>
-            <div class="section-label">Digital Space</div>
-            <h2 class="section-title">个人数字空间</h2>
+            <div class="section-label">AI 助手</div>
+            <h2 class="section-title">诺林 AI 助手</h2>
           </div>
-          <p class="section-note">把主站、博客、云盘、代码仓库和未来 AI 助手统一成一个数字中枢。</p>
-        </div>
-        <div class="card space-map">
-          <svg class="space-lines" viewBox="0 0 1000 330" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M500 165 L150 70" stroke="rgba(59,130,246,0.65)" stroke-width="1" stroke-dasharray="6 7" fill="none" />
-            <path d="M500 165 L850 70" stroke="rgba(16,185,129,0.62)" stroke-width="1" stroke-dasharray="6 7" fill="none" />
-            <path d="M500 165 L165 260" stroke="rgba(245,158,11,0.56)" stroke-width="1" stroke-dasharray="6 7" fill="none" />
-            <path d="M500 165 L835 260" stroke="rgba(139,92,246,0.72)" stroke-width="1" stroke-dasharray="6 7" fill="none" />
-          </svg>
-          <a class="node main" href="https://norin.me">
-            <div class="node-title">norin.me</div>
-            <div class="node-desc">主站 / 展示平台</div>
-          </a>
-          <a class="node blog" href="https://blog.norin.me">
-            <div class="node-title">blog.norin.me</div>
-            <div class="node-desc">博客 / 技术文章</div>
-          </a>
-          <a class="node github" href="https://github.com/norinyan" target="_blank" rel="noreferrer">
-            <div class="node-title">GitHub</div>
-            <div class="node-desc">项目 / 代码仓库</div>
-          </a>
-          <a class="node pan" href="https://pan.norin.me" target="_blank" rel="noreferrer">
-            <div class="node-title">pan.norin.me</div>
-            <div class="node-desc">云盘 / 文件入口</div>
-          </a>
-          <div class="node agent">
-            <div class="node-title">AI Agent</div>
-            <div class="node-desc">预留 / 个人虚拟人入口</div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="section-head">
-          <div>
-            <div class="section-label">AI Assistant</div>
-            <h2 class="section-title">Norin AI Assistant</h2>
-          </div>
-          <p class="section-note">先预留入口，后续接你的中转站 API 和模型 Key，用来做站内问答。</p>
         </div>
         <div class="card assistant-card k-purple">
           <div>
-            <div class="card-tag"><span class="dot purple"></span>Coming Soon</div>
-            <h3>个人 AI 助手</h3>
-            <p>
-              一个正在构建中的网站问答助手。后续将接入模型 API，用于回答关于我、项目、文章、研究方向和个人知识库的问题。
-            </p>
+            <div class="card-tag"><span class="dot purple"></span>构建中</div>
+            <h3>站内问答入口</h3>
+            <p>正在构建中。</p>
             <div class="coming">状态：规划中</div>
           </div>
           <div class="chat-preview" aria-label="AI 助手对话预览">
             <div class="bubble me">这个 CARLA 项目实现了哪些控制器？</div>
             <div class="bubble bot">目前支持 PD、Pure Pursuit、Stanley、LQR、MPC 横向控制器，纵向统一使用 PID。</div>
             <div class="bubble me">能解释一下 MPC 和 Stanley 的差异吗？</div>
-            <div class="bubble bot">可以。后续这里会接入站内知识库和项目文档进行回答。</div>
+            <div class="bubble bot">可以。当前入口尚未开放。</div>
           </div>
         </div>
       </section>
