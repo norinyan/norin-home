@@ -1,768 +1,538 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>智能网联车编队控制 · 三个创新点</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
-
-  :root {
-    --bg: #0a0b0e;
-    --bg2: #111318;
-    --bg3: #1a1d24;
-    --border: rgba(255,255,255,0.08);
-    --border2: rgba(255,255,255,0.15);
-    --text: #e8eaf0;
-    --muted: #6b7280;
-    --blue: #3b82f6;
-    --blue-light: #93c5fd;
-    --blue-bg: rgba(59,130,246,0.08);
-    --green: #10b981;
-    --green-light: #6ee7b7;
-    --green-bg: rgba(16,185,129,0.08);
-    --purple: #8b5cf6;
-    --purple-light: #c4b5fd;
-    --purple-bg: rgba(139,92,246,0.08);
-    --red: #ef4444;
-    --amber: #f59e0b;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    line-height: 1.6;
-    min-height: 100vh;
-  }
-
-  .header {
-    padding: 48px 40px 32px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .header-tag {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-
-  .header h1 {
-    font-size: 24px;
-    font-weight: 500;
-    color: var(--text);
-    margin-bottom: 8px;
-  }
-
-  .header p {
-    font-size: 14px;
-    color: var(--muted);
-  }
-
-  .nav {
-    display: flex;
-    gap: 0;
-    padding: 0 40px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .nav-btn {
-    padding: 16px 28px;
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    color: var(--muted);
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: 'Inter', sans-serif;
-    margin-bottom: -1px;
-  }
-
-  .nav-btn:hover { color: var(--text); }
-  .nav-btn.active-dth { color: var(--blue); border-bottom-color: var(--blue); }
-  .nav-btn.active-tube { color: var(--green); border-bottom-color: var(--green); }
-  .nav-btn.active-et { color: var(--purple); border-bottom-color: var(--purple); }
-
-  .content { padding: 32px 40px; max-width: 960px; }
-
-  .panel { display: none; }
-  .panel.active { display: block; }
-
-  .section {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 16px;
-  }
-
-  .section-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-
-  .section-label.blue { color: var(--blue); }
-  .section-label.green { color: var(--green); }
-  .section-label.purple { color: var(--purple); }
-
-  .desc {
-    font-size: 14px;
-    color: #9ca3af;
-    line-height: 1.75;
-    margin-bottom: 16px;
-  }
-
-  .desc strong { color: var(--text); font-weight: 500; }
-
-  .badge {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 500;
-    padding: 3px 10px;
-    border-radius: 20px;
-    margin-right: 8px;
-    margin-bottom: 4px;
-  }
-
-  .badge-problem { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
-  .badge-solution { background: rgba(16,185,129,0.12); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.25); }
-
-  .formula-block {
-    background: var(--bg3);
-    border-radius: 8px;
-    padding: 16px 20px;
-    margin: 12px 0;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    line-height: 2;
-    border-left: 3px solid;
-  }
-
-  .formula-block.blue { border-left-color: var(--blue); color: var(--blue-light); }
-  .formula-block.green { border-left-color: var(--green); color: var(--green-light); }
-  .formula-block.purple { border-left-color: var(--purple); color: var(--purple-light); }
-
-  .formula-block .comment {
-    color: var(--muted);
-    font-size: 12px;
-  }
-
-  .param-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-top: 16px;
-  }
-
-  .param-card {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px 16px;
-    text-align: center;
-  }
-
-  .param-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
-  .param-val { font-size: 22px; font-weight: 500; font-family: 'JetBrains Mono', monospace; }
-  .param-val.blue { color: var(--blue-light); }
-  .param-val.green { color: var(--green-light); }
-  .param-val.purple { color: var(--purple-light); }
-
-  .slider-section { margin: 16px 0; }
-
-  .slider-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 12px;
-  }
-
-  .slider-name {
-    font-size: 12px;
-    color: var(--muted);
-    min-width: 90px;
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  input[type=range] {
-    flex: 1;
-    height: 4px;
-    border-radius: 2px;
-    outline: none;
-    border: none;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-  }
-
-  input[type=range].blue { background: linear-gradient(to right, var(--blue) 0%, var(--bg3) 0%); accent-color: var(--blue); }
-  input[type=range].green { background: linear-gradient(to right, var(--green) 0%, var(--bg3) 0%); accent-color: var(--green); }
-  input[type=range].purple { background: linear-gradient(to right, var(--purple) 0%, var(--bg3) 0%); accent-color: var(--purple); }
-
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 16px; height: 16px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2px solid var(--bg);
-  }
-
-  .slider-val-tag {
-    font-size: 13px;
-    font-weight: 500;
-    min-width: 64px;
-    text-align: right;
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  canvas {
-    width: 100%;
-    display: block;
-    border-radius: 8px;
-  }
-
-  .two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-
-  .logic-chain {
-    background: var(--bg3);
-    border-radius: 8px;
-    padding: 20px;
-    margin-top: 12px;
-  }
-
-  .logic-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-  }
-
-  .logic-row:last-child { border-bottom: none; }
-
-  .logic-arrow { color: var(--muted); }
-  .logic-cause { color: var(--purple-light); min-width: 100px; }
-  .logic-effect { color: var(--text); }
-  .logic-note { color: var(--muted); font-size: 11px; margin-left: auto; }
-
-  .replay-btn {
-    background: var(--bg3);
-    border: 1px solid var(--border2);
-    color: var(--text);
-    font-size: 13px;
-    padding: 8px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    margin-top: 12px;
-    transition: all 0.2s;
-  }
-
-  .replay-btn:hover { background: var(--bg2); border-color: var(--purple); color: var(--purple-light); }
-
-  .stat-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-top: 14px;
-  }
-</style>
-</head>
-<body>
-
-<div class="header">
-  <div class="header-tag">智能网联车纵向编队控制 · 第二篇论文</div>
-  <h1>基于实时通信延迟的自适应编队控制框架</h1>
-  <p>动态时距（DTH）+ 自适应TubeMPC + 事件触发协同设计</p>
-</div>
-
-<div class="nav">
-  <button class="nav-btn active-dth" onclick="showPanel('dth',this)">创新点 1 · DTH</button>
-  <button class="nav-btn" onclick="showPanel('tube',this)">创新点 2 · 自适应TubeMPC</button>
-  <button class="nav-btn" onclick="showPanel('et',this)">创新点 3 · 事件触发</button>
-</div>
-
-<div class="content">
-
-<!-- DTH -->
-<div id="panel-dth" class="panel active">
-
-  <div class="section">
-    <div class="section-label blue">背景与问题</div>
-    <p class="desc">
-      <span class="badge badge-problem">CTH 局限</span>
-      传统固定时距策略（CTH）中，时距 h 为常数，期望间距仅随自车速度线性变化。在V2X网络中，<strong>通信延迟实时波动</strong>，控制器基于过期状态信息决策，固定间距无法反映信息质量的下降，延迟越大安全风险越高。
-    </p>
-    <div class="formula-block blue">
-      <span class="comment">// CTH（第一篇）</span><br>
-      d_ref = d₀ + h · v(t)<br>
-      <span class="comment">// h = 0.6 s 固定常数，与通信质量无关</span>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-label blue">DTH 设计</div>
-    <p class="desc">
-      <span class="badge badge-solution">创新</span>
-      将V2X实测单向通信延迟 τ(t) 实时映射至时距 h(t)，延迟越大期望间距越保守。<strong>信息可信度直接影响安全裕量</strong>，这在V2X编队控制领域鲜有先例。
-    </p>
-    <div class="formula-block blue">
-      <span class="comment">// DTH（第二篇创新点1）</span><br>
-      h(t) = h₀ + γ · τ(t)<br>
-      h(t) ∈ [h_min, h_max] = [0.6, 1.5] s<br>
-      <br>
-      d_ref,i(t) = d₀ + h(t) · v_i(t)<br>
-      e_s,i(t) = (s_{i-1} − s_i) − d_ref,i(t)<br>
-      <br>
-      <span class="comment">// 参数: h₀=0.8s, γ=3.3, d₀=1.5m</span><br>
-      <span class="comment">// τ(t): V2X单向延迟 = t_recv − t_send</span>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-label blue">交互演示</div>
-    <div class="slider-section">
-      <div class="slider-row">
-        <span class="slider-name">延迟 τ(t)</span>
-        <input type="range" class="blue" min="10" max="100" value="30" step="1" id="tau-s" oninput="updateDTH()">
-        <span class="slider-val-tag blue" id="tau-v" style="color:var(--blue-light)">30 ms</span>
-      </div>
-      <div class="slider-row">
-        <span class="slider-name">车速 v(t)</span>
-        <input type="range" class="blue" min="5" max="30" value="20" step="1" id="v-s" oninput="updateDTH()">
-        <span class="slider-val-tag" id="v-v" style="color:var(--blue-light)">2.0 m/s</span>
-      </div>
-    </div>
-    <div class="param-grid">
-      <div class="param-card">
-        <div class="param-label">动态时距 h(t)</div>
-        <div class="param-val blue" id="h-v">0.90 s</div>
-      </div>
-      <div class="param-card">
-        <div class="param-label">期望间距 d_ref</div>
-        <div class="param-val blue" id="dref-v">3.30 m</div>
-      </div>
-      <div class="param-card">
-        <div class="param-label">相比CTH多出</div>
-        <div class="param-val" id="diff-v" style="color:#fca5a5">+0.60 m</div>
-      </div>
-    </div>
-    <canvas id="dth-canvas" height="140" style="margin-top:16px;background:var(--bg3)"></canvas>
-  </div>
-
-</div>
-
-<!-- TubeMPC -->
-<div id="panel-tube" class="panel">
-
-  <div class="section">
-    <div class="section-label green">背景与问题</div>
-    <p class="desc">
-      <span class="badge badge-problem">MPC 局限</span>
-      标准MPC假设系统无扰动（w=0），但实车中执行器输出与期望加速度存在偏差。<strong>实车数据标定扰动上界 |w| ≤ 0.5 m/s²</strong>。扰动累积可能导致实际状态越出约束边界，鲁棒性不足。
-    </p>
-    <div class="formula-block green">
-      <span class="comment">// 标准MPC（忽略扰动）</span><br>
-      x(k+1) = Aₐ x(k) + Bₐ u(k)<br>
-      <span class="comment">// 隐含假设 w = 0，实车中不成立</span>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-label green">TubeMPC 设计</div>
-    <p class="desc">
-      <span class="badge badge-solution">创新</span>
-      将系统分解为标称系统与误差系统，用Tube包住扰动影响的边界。<strong>Tube大小随实时通信延迟自适应调整</strong>，延迟越大Tube扩张，约束收紧更多，鲁棒性增强。
-    </p>
-    <div class="formula-block green">
-      <span class="comment">// 实际系统</span><br>
-      x(k+1) = Aₐ x(k) + Bₐ u(k) + w(k),  |w| ≤ 0.5<br>
-      <br>
-      <span class="comment">// 分解：标称 + 误差</span><br>
-      标称: x̄(k+1) = Aₐ x̄(k) + Bₐ ū(k)   ← MPC在此求解<br>
-      误差: e(k+1) = Aₐ e(k) + w(k),  e = x − x̄<br>
-      <br>
-      <span class="comment">// 自适应Tube（创新）</span><br>
-      Ω(t) = Ω₀ + β · τ(t)<br>
-      <br>
-      <span class="comment">// 约束收紧</span><br>
-      x_min + Ω(t) ≤ x̄(k) ≤ x_max − Ω(t)<br>
-      <br>
-      <span class="comment">// 实际控制量</span><br>
-      u = ū + K · e
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-label green">交互演示</div>
-    <div class="slider-section">
-      <div class="slider-row">
-        <span class="slider-name">延迟 τ(t)</span>
-        <input type="range" class="green" min="10" max="100" value="30" step="1" id="tau-tube-s" oninput="updateTube()">
-        <span class="slider-val-tag" id="tau-tube-v" style="color:var(--green-light)">30 ms</span>
-      </div>
-    </div>
-    <div class="param-grid">
-      <div class="param-card">
-        <div class="param-label">Tube大小 Ω(t)</div>
-        <div class="param-val green" id="omega-v">—</div>
-      </div>
-      <div class="param-card">
-        <div class="param-label">约束收紧量</div>
-        <div class="param-val green" id="tight-v">—</div>
-      </div>
-      <div class="param-card">
-        <div class="param-label">可用约束空间</div>
-        <div class="param-val green" id="space-v">—</div>
-      </div>
-    </div>
-    <canvas id="tube-canvas" height="180" style="margin-top:16px;background:var(--bg3)"></canvas>
-  </div>
-
-</div>
-
-<!-- 事件触发 -->
-<div id="panel-et" class="panel">
-
-  <div class="section">
-    <div class="section-label purple">背景与问题</div>
-    <p class="desc">
-      <span class="badge badge-problem">周期控制局限</span>
-      周期性控制每个采样时刻都求解MPC并进行V2X通信。当编队状态变化缓慢时，存在大量<strong>不必要的计算与通信开销</strong>，浪费车载计算资源和V2X信道带宽。
-    </p>
-  </div>
-
-  <div class="section">
-    <div class="section-label purple">事件触发设计</div>
-    <p class="desc">
-      <span class="badge badge-solution">创新</span>
-      以Tube余量实时调节触发阈值，<strong>误差逼近Tube边界时才触发</strong>MPC求解与V2X通信，否则保持上次控制量。三个模块统一由通信延迟驱动，形成闭环协同框架。
-    </p>
-    <div class="formula-block purple">
-      <span class="comment">// 触发函数</span><br>
-      f(t) = ‖e_i(t)‖ − σ · ‖Ω(t)‖<br>
-      <br>
-      <span class="comment">// 触发条件</span><br>
-      f(t) &gt; 0  →  触发：重新求解MPC + V2X通信<br>
-      f(t) ≤ 0  →  不触发：保持上次控制量 u_last<br>
-      <br>
-      <span class="comment">// Tube余量</span><br>
-      ρ(t) = 1 − ‖e‖ / ‖Ω‖,  ρ ∈ [0, 1]
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-label purple">闭环协同逻辑</div>
-    <p class="desc">三个创新点统一由 τ(t) 驱动，形成完整闭环：</p>
-    <div class="logic-chain">
-      <div class="logic-row">
-        <span class="logic-cause">τ(t) ↑</span>
-        <span class="logic-arrow">→</span>
-        <span class="logic-effect">h(t) ↑　期望间距增大</span>
-        <span class="logic-note">DTH · 创新点1</span>
-      </div>
-      <div class="logic-row">
-        <span class="logic-cause">τ(t) ↑</span>
-        <span class="logic-arrow">→</span>
-        <span class="logic-effect">Ω(t) ↑　Tube扩张，鲁棒性增强</span>
-        <span class="logic-note">TubeMPC · 创新点2</span>
-      </div>
-      <div class="logic-row">
-        <span class="logic-cause">τ(t) ↑</span>
-        <span class="logic-arrow">→</span>
-        <span class="logic-effect">σ·‖Ω‖ ↑　触发阈值增大，更敏感</span>
-        <span class="logic-note">事件触发 · 创新点3</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-label purple">触发时序动态演示</div>
-    <canvas id="et-canvas" height="160" style="background:var(--bg3)"></canvas>
-    <div class="stat-row">
-      <div class="param-card">
-        <div class="param-label">总时刻数</div>
-        <div class="param-val purple" id="et-total" style="color:var(--purple-light)">60</div>
-      </div>
-      <div class="param-card">
-        <div class="param-label">触发次数</div>
-        <div class="param-val purple" id="et-count" style="color:var(--purple-light)">—</div>
-      </div>
-      <div class="param-card">
-        <div class="param-label">节省比例</div>
-        <div class="param-val purple" id="et-save" style="color:var(--purple-light)">—</div>
-      </div>
-    </div>
-    <button class="replay-btn" onclick="replayET()">重新演示 ↻</button>
-  </div>
-
-</div>
-</div>
-
-<script>
-function showPanel(id, btn) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-dth','active-tube','active-et'));
-  document.getElementById('panel-'+id).classList.add('active');
-  btn.classList.add('active-'+id);
-  if(id==='et') setTimeout(replayET, 100);
-  if(id==='tube') updateTube();
-  if(id==='dth') { updateDTH(); }
-}
-
-function updateDTH() {
-  const tau = parseInt(document.getElementById('tau-s').value)/1000;
-  const v = parseInt(document.getElementById('v-s').value)/10;
-  document.getElementById('tau-v').textContent = (tau*1000).toFixed(0)+' ms';
-  document.getElementById('v-v').textContent = v.toFixed(1)+' m/s';
-  const h0=0.8, g=3.3, d0=1.5, hf=0.6;
-  const h = Math.min(1.5, Math.max(0.6, h0+g*tau));
-  const dref = d0+h*v;
-  const dcth = d0+hf*v;
-  document.getElementById('h-v').textContent = h.toFixed(3)+' s';
-  document.getElementById('dref-v').textContent = dref.toFixed(2)+' m';
-  const diff = dref-dcth;
-  const el = document.getElementById('diff-v');
-  el.textContent = (diff>=0?'+':'')+diff.toFixed(2)+' m';
-  el.style.color = diff>0 ? '#fca5a5' : '#6ee7b7';
-  updateSliderFill('tau-s','blue');
-  updateSliderFill('v-s','blue');
-  drawDTH(tau, v);
-}
-
-function updateSliderFill(id, color) {
-  const el = document.getElementById(id);
-  const pct = (el.value-el.min)/(el.max-el.min)*100;
-  const colors = {blue:'#3b82f6', green:'#10b981', purple:'#8b5cf6'};
-  el.style.background = `linear-gradient(to right, ${colors[color]} ${pct}%, #1a1d24 ${pct}%)`;
-}
-
-function drawDTH(curTau, v) {
-  const c = document.getElementById('dth-canvas');
-  if(!c) return;
-  const W = c.offsetWidth; const H = 140;
-  c.width = W; c.height = H;
-  const ctx = c.getContext('2d');
-  ctx.clearRect(0,0,W,H);
-  const pad = {l:50, r:20, t:16, b:30};
-  const pw = W-pad.l-pad.r, ph = H-pad.t-pad.b;
-  const steps = 80, maxT = 0.1, d0=1.5, h0=0.8, g=3.3, hf=0.6;
-  const maxD = d0+1.5*v+0.5, minD = d0+0.6*v-0.5;
-  function toY(d){ return pad.t + ph - (d-minD)/(maxD-minD)*ph; }
-  function toX(i){ return pad.l + i/steps*pw; }
-
-  ctx.strokeStyle = 'rgba(59,130,246,0.2)'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
-  ctx.beginPath();
-  for(let i=0;i<=steps;i++){
-    const t=i/steps*maxT;
-    const d=d0+hf*v;
-    const x=toX(i), y=toY(d);
-    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-  }
-  ctx.stroke();
-
-  ctx.strokeStyle = '#3b82f6'; ctx.lineWidth=2; ctx.setLineDash([]);
-  ctx.beginPath();
-  for(let i=0;i<=steps;i++){
-    const t=i/steps*maxT;
-    const h=Math.min(1.5,Math.max(0.6,h0+g*t));
-    const d=d0+h*v;
-    const x=toX(i), y=toY(d);
-    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-  }
-  ctx.stroke();
-
-  const curX = toX(Math.round(curTau/maxT*steps));
-  const curH = Math.min(1.5,Math.max(0.6,h0+g*curTau));
-  const curD = d0+curH*v;
-  const curY = toY(curD);
-  ctx.strokeStyle='rgba(255,255,255,0.2)'; ctx.lineWidth=1; ctx.setLineDash([2,3]);
-  ctx.beginPath(); ctx.moveTo(curX, pad.t); ctx.lineTo(curX, H-pad.b); ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.fillStyle='#3b82f6';
-  ctx.beginPath(); ctx.arc(curX,curY,5,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle='rgba(59,130,246,0.15)';
-  ctx.beginPath(); ctx.arc(curX,curY,10,0,Math.PI*2); ctx.fill();
-
-  ctx.fillStyle='#93c5fd'; ctx.font='12px JetBrains Mono, monospace';
-  ctx.fillText('DTH d_ref(t)', pad.l+8, pad.t+16);
-  ctx.fillStyle='rgba(59,130,246,0.5)';
-  ctx.fillText('CTH d_ref', pad.l+8, pad.t+32);
-
-  ctx.fillStyle='#6b7280'; ctx.font='11px Inter, sans-serif';
-  ctx.fillText('τ=10ms', pad.l, H-8);
-  ctx.textAlign='right';
-  ctx.fillText('τ=100ms', W-pad.r, H-8);
-  ctx.textAlign='left';
-  ctx.fillText('d(m)', 2, pad.t+8);
-}
-
-function updateTube() {
-  const tau = parseInt(document.getElementById('tau-tube-s').value)/1000;
-  document.getElementById('tau-tube-v').textContent = (tau*1000).toFixed(0)+' ms';
-  updateSliderFill('tau-tube-s','green');
-  const omega0=0.3, beta=2.0;
-  const omega = Math.min(0.8, omega0+beta*tau);
-  document.getElementById('omega-v').textContent = omega.toFixed(3);
-  document.getElementById('tight-v').textContent = '±'+omega.toFixed(3);
-  const space = Math.max(0, 1.0-omega);
-  document.getElementById('space-v').textContent = (space*100).toFixed(0)+'%';
-  drawTube(omega);
-}
-
-function drawTube(omega) {
-  const c = document.getElementById('tube-canvas');
-  if(!c) return;
-  const W=c.offsetWidth, H=180;
-  c.width=W; c.height=H;
-  const ctx=c.getContext('2d');
-  ctx.clearRect(0,0,W,H);
-  const mid=H/2, steps=100, pad=30;
-  const pts=[];
-  for(let i=0;i<=steps;i++){
-    const x=pad+i/steps*(W-2*pad);
-    const y=mid+Math.sin(i/steps*Math.PI*2.5)*22+Math.sin(i/steps*Math.PI)*8;
-    pts.push({x,y});
-  }
-  const tubeH = Math.min(55, omega*180);
-
-  ctx.fillStyle='rgba(16,185,129,0.06)';
-  ctx.beginPath();
-  pts.forEach((p,i)=>{ if(i===0) ctx.moveTo(p.x,p.y-tubeH); else ctx.lineTo(p.x,p.y-tubeH); });
-  [...pts].reverse().forEach(p=>ctx.lineTo(p.x,p.y+tubeH));
-  ctx.closePath(); ctx.fill();
-
-  ['top','bot'].forEach(side=>{
-    ctx.strokeStyle='rgba(16,185,129,0.4)'; ctx.lineWidth=1; ctx.setLineDash([4,3]);
-    ctx.beginPath();
-    pts.forEach((p,i)=>{
-      const y = side==='top' ? p.y-tubeH : p.y+tubeH;
-      if(i===0) ctx.moveTo(p.x,y); else ctx.lineTo(p.x,y);
-    });
-    ctx.stroke();
-  });
-
-  ctx.strokeStyle='#10b981'; ctx.lineWidth=2; ctx.setLineDash([]);
-  ctx.beginPath();
-  pts.forEach((p,i)=>{ if(i===0) ctx.moveTo(p.x,p.y); else ctx.lineTo(p.x,p.y); });
-  ctx.stroke();
-
-  ctx.strokeStyle='rgba(110,231,183,0.7)'; ctx.lineWidth=1.5; ctx.setLineDash([]);
-  let seed=42;
-  function rand(){ seed=(seed*1664525+1013904223)&0xffffffff; return (seed>>>0)/0xffffffff; }
-  ctx.beginPath();
-  pts.forEach((p,i)=>{
-    const noise=(rand()-0.5)*tubeH*1.6;
-    const ny=Math.max(p.y-tubeH+3, Math.min(p.y+tubeH-3, p.y+noise));
-    if(i===0) ctx.moveTo(p.x,ny); else ctx.lineTo(p.x,ny);
-  });
-  ctx.stroke();
-
-  ctx.fillStyle='#6ee7b7'; ctx.font='12px JetBrains Mono, monospace'; ctx.setLineDash([]);
-  ctx.fillText('标称轨迹 x̄', pad+6, mid-tubeH-8);
-  ctx.fillStyle='rgba(16,185,129,0.6)';
-  ctx.fillText('Tube边界 Ω='+omega.toFixed(3), pad+6, mid+tubeH+16);
-  ctx.fillStyle='rgba(110,231,183,0.8)';
-  ctx.fillText('实际轨迹 x', W-pad-80, mid-14);
-}
-
-let etTimer=null;
-function replayET() {
-  if(etTimer) clearInterval(etTimer);
-  const c=document.getElementById('et-canvas');
-  if(!c) return;
-  const W=c.offsetWidth, H=160;
-  c.width=W; c.height=H;
-  const ctx=c.getContext('2d');
-  const total=60, sigma=0.6, omega=0.4;
-  const threshold=sigma*omega;
-  let data=[], err=0.12, trigCount=0;
-  let seed=Date.now()&0xffff;
-  function rand(){ seed=(seed*1664525+1013904223)&0xffff; return seed/0xffff; }
-  for(let i=0;i<total;i++){
-    err += (rand()-0.47)*0.07;
-    err = Math.max(0.04, Math.min(0.52, err));
-    const triggered = err > threshold;
-    if(triggered){ trigCount++; err *= 0.55; }
-    data.push({err, triggered});
-  }
-  document.getElementById('et-total').textContent = total;
-  document.getElementById('et-count').textContent = trigCount;
-  document.getElementById('et-save').textContent = ((1-trigCount/total)*100).toFixed(0)+'%';
-  let step=0;
-  function draw(){
-    ctx.clearRect(0,0,W,H);
-    const pad={l:12,r:12,t:16,b:28};
-    const pw=W-pad.l-pad.r, ph=H-pad.t-pad.b;
-    const bw=pw/total;
-    const maxE=0.65;
-    function toY(v){ return pad.t+ph-(v/maxE)*ph; }
-
-    ctx.strokeStyle='rgba(139,92,246,0.3)'; ctx.lineWidth=1; ctx.setLineDash([4,3]);
-    const thY=toY(threshold);
-    ctx.beginPath(); ctx.moveTo(pad.l,thY); ctx.lineTo(W-pad.r,thY); ctx.stroke();
-    ctx.fillStyle='rgba(139,92,246,0.6)'; ctx.font='11px JetBrains Mono, monospace'; ctx.setLineDash([]);
-    ctx.fillText('触发阈值 σ·Ω = '+threshold.toFixed(2), pad.l+6, thY-5);
-
-    for(let i=0;i<step;i++){
-      const d=data[i];
-      const x=pad.l+i*bw+bw/2;
-      const errY=toY(d.err);
-      if(d.triggered){
-        ctx.fillStyle='rgba(139,92,246,0.12)';
-        ctx.fillRect(pad.l+i*bw, pad.t, bw, ph);
-        ctx.fillStyle='#8b5cf6';
-        ctx.beginPath(); ctx.arc(x,errY,5,0,Math.PI*2); ctx.fill();
-        ctx.fillStyle='rgba(139,92,246,0.2)';
-        ctx.beginPath(); ctx.arc(x,errY,11,0,Math.PI*2); ctx.fill();
-      } else {
-        ctx.fillStyle='rgba(139,92,246,0.25)';
-        ctx.beginPath(); ctx.arc(x,errY,3,0,Math.PI*2); ctx.fill();
-      }
-      if(i>0){
-        const px=pad.l+(i-1)*bw+bw/2;
-        const pY=toY(data[i-1].err);
-        ctx.strokeStyle='rgba(139,92,246,0.3)'; ctx.lineWidth=1; ctx.setLineDash([]);
-        ctx.beginPath(); ctx.moveTo(px,pY); ctx.lineTo(x,errY); ctx.stroke();
-      }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Norin — Robotics & Autonomous Driving</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f6f3;
+      --surface: #ffffff;
+      --border: #e8e6e0;
+      --text: #1a1814;
+      --muted: #8a8680;
+      --accent: #2d5a3d;
+      --accent-light: #e8f0ea;
+      --accent2: #c4622d;
+      --mono: 'DM Mono', monospace;
+      --serif: 'DM Serif Display', serif;
+      --sans: 'DM Sans', sans-serif;
     }
 
-    ctx.fillStyle='#8b5cf6'; ctx.font='11px Inter, sans-serif';
-    ctx.fillText('● 触发（重新求解MPC）', W-160, pad.t+14);
-    ctx.fillStyle='rgba(139,92,246,0.4)';
-    ctx.fillText('● 不触发（保持上次控制量）', W-176, pad.t+28);
-    ctx.fillStyle='#6b7280'; ctx.font='11px sans-serif';
-    ctx.fillText('‖e‖', pad.l, H-8);
-    ctx.fillText('时间步 k →', W/2-20, H-8);
-  }
-  etTimer=setInterval(()=>{
-    step++;
-    draw();
-    if(step>=total) clearInterval(etTimer);
-  }, 60);
-}
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-window.addEventListener('load', ()=>{
-  updateDTH();
-  updateTube();
-});
-</script>
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE TEXTURE ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── LAYOUT ── */
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── HEADER ── */
+    header {
+      padding: 4rem 0 3rem;
+      border-bottom: 1px solid var(--border);
+      animation: fadeUp 0.7s ease both;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+
+    .header-left { flex: 1; }
+
+    .tag {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      background: var(--accent-light);
+      border: 1px solid #c8deca;
+      padding: 0.2rem 0.6rem;
+      border-radius: 2px;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 6vw, 3.6rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.4rem;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: var(--muted);
+      font-family: var(--mono);
+      margin-bottom: 1.5rem;
+    }
+
+    .bio {
+      font-size: 1rem;
+      color: #4a4740;
+      max-width: 480px;
+      line-height: 1.75;
+    }
+
+    .bio-zh {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      text-decoration: none;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.8rem;
+      border-radius: 2px;
+      transition: all 0.2s;
+      background: var(--surface);
+    }
+
+    nav a:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-light);
+    }
+
+    nav a.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    nav a.primary:hover {
+      background: #224a30;
+      border-color: #224a30;
+      color: #fff;
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      padding: 3rem 0;
+      border-bottom: 1px solid var(--border);
+      animation: fadeUp 0.7s ease both;
+    }
+
+    section:nth-child(2) { animation-delay: 0.1s; }
+    section:nth-child(3) { animation-delay: 0.2s; }
+    section:nth-child(4) { animation-delay: 0.3s; }
+    section:nth-child(5) { animation-delay: 0.4s; }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── TECH STACK ── */
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .stack-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem 1.2rem;
+      transition: border-color 0.2s;
+    }
+
+    .stack-card:hover { border-color: var(--accent); }
+
+    .stack-category {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--accent2);
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+    }
+
+    .stack-items {
+      font-size: 0.88rem;
+      color: #4a4740;
+      line-height: 1.8;
+    }
+
+    /* ── PROJECTS ── */
+    .project-list { display: flex; flex-direction: column; gap: 1rem; }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.2rem 1.4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .project-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 2px 12px rgba(45,90,61,0.08);
+    }
+
+    .project-name {
+      font-family: var(--mono);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 0.3rem;
+    }
+
+    .project-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .project-desc-zh {
+      font-size: 0.82rem;
+      color: #b0ada8;
+      margin-top: 0.2rem;
+    }
+
+    .project-tags {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      margin-top: 0.6rem;
+    }
+
+    .ptag {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      background: var(--accent-light);
+      color: var(--accent);
+      border: 1px solid #c8deca;
+      padding: 0.15rem 0.5rem;
+      border-radius: 2px;
+    }
+
+    .project-link {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-decoration: none;
+      white-space: nowrap;
+      padding: 0.3rem 0.6rem;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .project-link:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* ── BLOG ── */
+    .blog-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      transition: color 0.2s;
+    }
+
+    .blog-card:last-child { border-bottom: none; }
+    .blog-card:hover .blog-title { color: var(--accent); }
+
+    .blog-title {
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+
+    .blog-meta {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .blog-more {
+      display: inline-block;
+      margin-top: 1.2rem;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid var(--accent);
+      padding-bottom: 1px;
+    }
+
+    /* ── CONTACT ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.8rem;
+    }
+
+    .contact-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      padding: 0.8rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      text-decoration: none;
+      transition: border-color 0.2s;
+    }
+
+    .contact-item:hover { border-color: var(--accent); }
+
+    .contact-platform {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    .contact-value {
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2.5rem 0;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      animation: fadeUp 0.7s 0.5s ease both;
+    }
+
+    footer span { color: var(--accent2); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .header-inner { flex-direction: column; }
+      .stack-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="header-left">
+        <div class="tag">Graduate Researcher · Class of 2027</div>
+        <h1>Hi, I'm <em>Norin</em></h1>
+        <p class="subtitle">Robotics · Autonomous Driving · ROS2 · C++</p>
+        <p class="bio">
+          I build control systems for autonomous vehicles — from MPC algorithms to real-car convoy experiments.
+          Currently finishing my Master's at Zhongyuan University of Technology, focusing on multi-vehicle formation control.
+        </p>
+        <p class="bio-zh">控制理论与控制工程在读硕士，研究方向：智能网联车多车编队控制</p>
+        <nav>
+          <a href="https://blog.norin.me" class="primary">Blog →</a>
+          <a href="https://github.com/norinyan" target="_blank">GitHub</a>
+          <a href="mailto:hi@norin.me">hi@norin.me</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- TECH STACK -->
+  <section>
+    <div class="section-label">Tech Stack · 技术栈</div>
+    <div class="stack-grid">
+      <div class="stack-card">
+        <div class="stack-category">CONTROL</div>
+        <div class="stack-items">MPC · PID · LQR<br>Formation Control<br>Kinematic Models</div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-category">ROBOTICS</div>
+        <div class="stack-items">ROS2 · CARLA<br>Python · C++<br>Real Vehicle Exp.</div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-category">DEVOPS</div>
+        <div class="stack-items">Docker · Nginx<br>Linux · Git<br>Cloudflare</div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-category">TOOLS</div>
+        <div class="stack-items">NumPy · cvxpy<br>Eigen3 · CMake<br>Matplotlib</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section>
+    <div class="section-label">Projects · 项目</div>
+    <div class="project-list">
+
+      <div class="project-card">
+        <div>
+          <div class="project-name">Real-Car Convoy Control</div>
+          <div class="project-desc">MPC + PID dual-layer controller for 3-vehicle electric SUV formation at 1.88 m/s on campus roads.</div>
+          <div class="project-desc-zh">三辆纯电动SUV实车编队，MPC+PID双层控制，ROS2+Python，校园400米路线验证</div>
+          <div class="project-tags">
+            <span class="ptag">ROS2</span>
+            <span class="ptag">MPC</span>
+            <span class="ptag">Real Vehicle</span>
+            <span class="ptag">Python</span>
+          </div>
+        </div>
+        <a class="project-link" href="https://github.com/norinyan" target="_blank">GitHub ↗</a>
+      </div>
+
+      <div class="project-card">
+        <div>
+          <div class="project-name">Modular Motion Control Sim</div>
+          <div class="project-desc">Strategy-pattern framework decoupling vehicle model, algorithm, and path. Supports PID, MPC, Stanley, LQR.</div>
+          <div class="project-desc-zh">策略模式解耦模型/算法/路径的模块化仿真框架，支持多种控制器对比评测</div>
+          <div class="project-tags">
+            <span class="ptag">Python</span>
+            <span class="ptag">PID</span>
+            <span class="ptag">MPC</span>
+            <span class="ptag">Simulation</span>
+          </div>
+        </div>
+        <a class="project-link" href="https://github.com/norinyan" target="_blank">GitHub ↗</a>
+      </div>
+
+      <div class="project-card">
+        <div>
+          <div class="project-name">CARLA Formation Sim</div>
+          <div class="project-desc">3-vehicle longitudinal convoy simulation in CARLA Town3, CTH spacing strategy with Python.</div>
+          <div class="project-desc-zh">CARLA仿真环境三车纵向编队，CTH间距策略，Town3长直线场景</div>
+          <div class="project-tags">
+            <span class="ptag">CARLA</span>
+            <span class="ptag">Python</span>
+            <span class="ptag">CTH</span>
+          </div>
+        </div>
+        <a class="project-link" href="https://github.com/norinyan" target="_blank">GitHub ↗</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BLOG -->
+  <section>
+    <div class="section-label">Recent Posts · 近期文章</div>
+    <a class="blog-card" href="https://blog.norin.me">
+      <span class="blog-title">PID控制器完全指南 — 从原理到实车调参</span>
+      <span class="blog-meta">Control</span>
+    </a>
+    <a class="blog-card" href="https://blog.norin.me">
+      <span class="blog-title">ROS2 + Docker 开发环境搭建教程</span>
+      <span class="blog-meta">DevOps</span>
+    </a>
+    <a class="blog-card" href="https://blog.norin.me">
+      <span class="blog-title">Nginx 反向代理配置：从零到HTTPS</span>
+      <span class="blog-meta">Server</span>
+    </a>
+    <a class="blog-more" href="https://blog.norin.me">All posts →</a>
+  </section>
+
+  <!-- CONTACT -->
+  <section>
+    <div class="section-label">Contact · 联系方式</div>
+    <div class="contact-grid">
+      <a class="contact-item" href="mailto:hi@norin.me">
+        <span class="contact-platform">EMAIL</span>
+        <span class="contact-value">hi@norin.me</span>
+      </a>
+      <a class="contact-item" href="https://github.com/norinyan" target="_blank">
+        <span class="contact-platform">GITHUB</span>
+        <span class="contact-value">github.com/norinyan</span>
+      </a>
+      <a class="contact-item" href="https://blog.norin.me" target="_blank">
+        <span class="contact-platform">BLOG</span>
+        <span class="contact-value">blog.norin.me</span>
+      </a>
+      <a class="contact-item" href="https://pan.norin.me" target="_blank">
+        <span class="contact-platform">PAN</span>
+        <span class="contact-value">pan.norin.me</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Norin · Built with <span>♥</span> · norin.me</p>
+  </footer>
+
+</div>
 </body>
 </html>
